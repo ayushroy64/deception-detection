@@ -8,13 +8,13 @@
 ## BiLSTM+CNN
 
 ## SVM (MobileNet)
-  Command used: py -3.8 -m project_mobilenet_and_svm_v2.py
+  Command used: py -3.8 -m project_mobilenet_and_svm_v2.py <br />
   The above command uses Python v3.8.
 ## LSTM
-  Command used: py -3.8 -m project_lstm_v3.py
+  Command used: py -3.8 -m project_lstm_v3.py <br />
   The above command uses Python v3.8.
 ## XGBoost
-  Command used: py -3.8 -m project_xgboost_v4.py
+  Command used: py -3.8 -m project_xgboost_v4.py <br />
   The above command uses Python v3.8.
 
 
