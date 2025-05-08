@@ -13,51 +13,48 @@ mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(static_image_mode=False, max_num_faces=1, refine_landmarks=True)
 
 # Function to extract facial landmarks from video
-def extract_landmarks(video_path):
-    cap = cv2.VideoCapture(video_path)
+def extract_landmarks(video_src):
+    capt = cv2.VideoCapture(video_src)
     frame_features = []
     
-    while cap.isOpened():
-        ret, frame = cap.read()
+    while capt.isOpened():
+        ret, frame = capt.read()
         if not ret:
-            break  # Stop if video ends
+            break  
         
-        frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        results = face_mesh.process(frame_rgb)
+        frameRGB = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        results = face_mesh.process(frameRGB)
         
         if results.multi_face_landmarks:
-            face_landmarks = results.multi_face_landmarks[0]
+            faceLandmarks = results.multi_face_landmarks[0]
             landmarks = []
-            for landmark in face_landmarks.landmark:
+            for landmark in faceLandmarks.landmark:
                 landmarks.extend([landmark.x, landmark.y, landmark.z])
             frame_features.append(landmarks)
     
-    cap.release()
+    capt.release()
     
     if len(frame_features) > 0:
-        return np.mean(frame_features, axis=0)  # Take average of all frames
+        return np.mean(frame_features, axis=0) 
     else:
-        return None  # Return None if no faces were detected
+        return None 
 
-# Paths to the video folders
-# deception folder - C:\Reet\College\FINAL_USC\csci467\project\Deceptive
-# truthful folder - C:\Reet\College\FINAL_USC\csci467\project\Truthful
 
 # Load dataset
-base_path_deception = "C:\Reet\College\FINAL_USC\csci467\project\Deceptive"  # Update with actual path
-base_path_truth = "C:\Reet\College\FINAL_USC\csci467\project\Truthful"  # Update with actual path
+base_path_deception = "C:\Reet\College\FINAL_USC\csci467\project\Deceptive"  
+base_path_truth = "C:\Reet\College\FINAL_USC\csci467\project\Truthful"  
 
 # Load dataset
-df = pd.read_csv("data.csv")  # Replace with your actual CSV filename
+df = pd.read_csv("data.csv")  
 
 # Extract Features and Labels
 X, y = [], []
 
 for _, row in df.iterrows():
     filename = row["id"]
-    label = 1 if row["class"] == "deceptive" else 0  # 1 for deception, 0 for truth
+    label = 1 if row["class"] == "deceptive" else 0 
     
-    # Determine correct folder
+    # Dealing with file path issues 
     video_path = os.path.join(base_path_deception, filename) if label == 1 else os.path.join(base_path_truth, filename)
 
     if not os.path.exists(video_path):
@@ -77,7 +74,7 @@ y = np.array(y)
 scaler = StandardScaler()
 X = scaler.fit_transform(X)
 
-# Stratified Split: Ensures balanced deceptive & truthful samples in all sets
+# Stratified Split
 X_train, X_temp, y_train, y_temp = train_test_split(X, y, test_size=0.30, random_state=42, stratify=y)
 X_dev, X_test, y_dev, y_test = train_test_split(X_temp, y_temp, test_size=0.50, random_state=42, stratify=y_temp)
 
@@ -105,7 +102,3 @@ print(f"Training Accuracy: {train_acc:.2f}, F1 Score: {train_f1:.2f}")
 print(f"Development Accuracy: {dev_acc:.2f}, F1 Score: {dev_f1:.2f}")
 print(f"Testing Accuracy: {test_acc:.2f}, F1 Score: {test_f1:.2f}")
 
-# Print Accuracy Scores
-print(f"Training Accuracy: {train_acc:.2f}")
-print(f"Development Accuracy: {dev_acc:.2f}")
-print(f"Testing Accuracy: {test_acc:.2f}")
