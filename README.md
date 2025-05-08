@@ -3,7 +3,7 @@
 ## Baseline
 
 ## SVM (Mediapipe)
-  Command used: py -3.8 -m project_mediapipe_and_svm_v1.py
+  Command used: py -3.8 -m project_mediapipe_and_svm_v1.py <br />
   The above command uses Python v3.8.
 ## BiLSTM+CNN
 
